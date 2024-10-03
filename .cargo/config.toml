@@ -1,0 +1,25 @@
+[unstable]
+build-std = ["core", "panic_abort", "compiler_builtins"]
+build-std-features = ["optimize_for_size"]
+
+[build]
+target = "avr-unknown-gnu-atmega328"
+
+[target.avr-unknown-gnu-atmega328]
+runner = "ravedude -c -b 9600 uno"
+rustflags = ["-Ctarget-cpu=atmega328p"]
+
+[env]
+AVR_CPU_FREQUENCY_HZ = "16_000_000"
+
+[profile.dev]
+opt-level = "z"
+panic = "abort"
+strip = true
+
+[profile.release]
+opt-level = "z"
+codegen-units = 1
+panic = "abort"
+lto = true
+strip = true
