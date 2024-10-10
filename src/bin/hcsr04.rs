@@ -1,17 +1,23 @@
 #![no_std]
 #![no_main]
 
+use core::convert::Infallible;
+
 use arduino_hal::{default_serial, entry, pins, Peripherals};
 use panic_halt as _;
 use ufmt::uwriteln;
 
 #[entry]
 fn _start() -> ! {
-    main()
+    let _ = main();
+
+    #[allow(clippy::empty_loop)]
+    loop {}
 }
 
-fn main() -> ! {
-    let peri = Peripherals::take().unwrap();
+fn main() -> Result<(), Infallible> {
+    // SAFETY: we only run this once on init
+    let peri = unsafe { Peripherals::steal() };
     let pins = pins!(peri);
     let mut serial = default_serial!(peri, pins, 115_200);
 
@@ -53,13 +59,13 @@ fn main() -> ! {
         let dur = timer.tcnt1.read().bits().saturating_mul(4);
         let dist = match dur {
             u16::MAX => {
-                uwriteln!(serial, "pulse end timeout").unwrap();
+                uwriteln!(serial, "pulse end timeout")?;
                 continue 'outer;
             }
             _ => dur / 58,
         };
 
-        uwriteln!(serial, "distance: {} cm", dist).unwrap();
+        uwriteln!(serial, "distance: {} cm", dist)?;
 
         // wait before pulsing again
         timer.tcnt1.write(|w| w.bits(0));

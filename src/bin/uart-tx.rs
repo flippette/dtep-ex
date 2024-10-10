@@ -1,6 +1,8 @@
 #![no_std]
 #![no_main]
 
+use core::convert::Infallible;
+
 use arduino_hal::{
     default_serial, delay_ms, entry, pins, prelude::*, Peripherals,
 };
@@ -11,11 +13,15 @@ use ufmt::uwriteln;
 
 #[entry]
 fn _start() -> ! {
-    main()
+    let _ = main();
+
+    #[allow(clippy::empty_loop)]
+    loop {}
 }
 
-fn main() -> ! {
-    let peri = Peripherals::take().unwrap();
+fn main() -> Result<(), Infallible> {
+    // SAFETY: we only run this once on init
+    let peri = unsafe { Peripherals::steal() };
     let pins = pins!(peri);
     let mut serial = default_serial!(peri, pins, 115_200);
     let mut buf = Vec::<u8, 32>::new();
@@ -25,12 +31,12 @@ fn main() -> ! {
     delay_ms(1_000);
 
     loop {
-        uwriteln!(serial, "ping {}", counter).unwrap();
+        uwriteln!(serial, "ping {}", counter)?;
         counter += 1;
 
         buf.clear();
         loop {
-            match block!(serial.read()).unwrap() {
+            match block!(serial.read())? {
                 b'\n' => break,
                 ch => buf.push(ch).unwrap(),
             }

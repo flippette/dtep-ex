@@ -1,10 +1,10 @@
 #![no_std]
 #![no_main]
 
-use core::ops::RangeInclusive;
+use core::{convert::Infallible, ops::RangeInclusive};
 
 use arduino_hal::{
-    adc::AdcSettings, default_serial, entry, pins, prelude::*, Adc, Peripherals,
+    adc::AdcSettings, default_serial, entry, pins, Adc, Peripherals,
 };
 use panic_halt as _;
 use ufmt::{uwrite, uwriteln};
@@ -18,8 +18,16 @@ const Y_UPRIGHT_RANGE: RangeInclusive<u16> = 265..=275;
 const Z_UPRIGHT_RANGE: RangeInclusive<u16> = 345..=355;
 
 #[entry]
-fn main() -> ! {
-    let peri = Peripherals::take().unwrap();
+fn _start() -> ! {
+    let _ = main();
+
+    #[allow(clippy::empty_loop)]
+    loop {}
+}
+
+fn main() -> Result<(), Infallible> {
+    // SAFETY: we only run this once on init
+    let peri = unsafe { Peripherals::steal() };
     let pins = pins!(peri);
     let mut usart = default_serial!(peri, pins, 115_200);
 
@@ -33,7 +41,7 @@ fn main() -> ! {
         let y = y_pin.analog_read(&mut adc);
         let z = z_pin.analog_read(&mut adc);
 
-        uwrite!(usart, "{} {} {}", x, y, z).unwrap_infallible();
+        uwrite!(usart, "{} {} {}", x, y, z)?;
 
         uwriteln!(
             usart,
@@ -51,7 +59,6 @@ fn main() -> ! {
             } else {
                 ""
             }
-        )
-        .unwrap_infallible();
+        )?;
     }
 }
