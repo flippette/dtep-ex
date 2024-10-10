@@ -6,7 +6,7 @@ build-std-features = ["optimize_for_size"]
 target = "avr-unknown-gnu-atmega328"
 
 [target.avr-unknown-gnu-atmega328]
-runner = "ravedude -c -b 9600 uno"
+runner = "ravedude -c -b 115200 uno"
 rustflags = ["-Ctarget-cpu=atmega328p"]
 
 [env]

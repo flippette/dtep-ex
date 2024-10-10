@@ -13,7 +13,7 @@ fn _start() -> ! {
 fn main() -> ! {
     let peri = Peripherals::take().unwrap();
     let pins = pins!(peri);
-    let mut serial = default_serial!(peri, pins, 9600);
+    let mut serial = default_serial!(peri, pins, 115_200);
 
     let mut trig = pins.d3.into_output();
     let echo = pins.d2;

@@ -6,11 +6,16 @@ edition = "2021"
 [dependencies]
 critical-section = "1.1"
 panic-halt = "0.2"
+nb = "1.1"
 ufmt = "0.2"
 
 [dependencies.arduino-hal]
 git = "https://github.com/Rahix/avr-hal.git"
 features = ["arduino-uno", "critical-section-impl"]
+
+[dependencies.heapless]
+version = "0.8"
+features = ["ufmt"]
 
 [[bin]]
 name = "adxl335"
@@ -20,3 +25,9 @@ name = "blinky"
 
 [[bin]]
 name = "hcsr04"
+
+[[bin]]
+name = "uart-tx"
+
+[[bin]]
+name = "uart-rx"

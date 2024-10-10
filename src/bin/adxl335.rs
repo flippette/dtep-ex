@@ -4,8 +4,7 @@
 use core::ops::RangeInclusive;
 
 use arduino_hal::{
-    adc::AdcSettings, entry, hal::usart::BaudrateArduinoExt, pins, prelude::*,
-    Adc, Peripherals, Usart,
+    adc::AdcSettings, default_serial, entry, pins, prelude::*, Adc, Peripherals,
 };
 use panic_halt as _;
 use ufmt::{uwrite, uwriteln};
@@ -22,11 +21,7 @@ const Z_UPRIGHT_RANGE: RangeInclusive<u16> = 345..=355;
 fn main() -> ! {
     let peri = Peripherals::take().unwrap();
     let pins = pins!(peri);
-
-    let tx_pin = pins.d1.into_output();
-    let rx_pin = pins.d0.into_pull_up_input();
-    let mut usart =
-        Usart::new(peri.USART0, rx_pin, tx_pin, 9600.into_baudrate());
+    let mut usart = default_serial!(peri, pins, 115_200);
 
     let mut adc = Adc::new(peri.ADC, AdcSettings::default());
     let x_pin = pins.a0.into_analog_input(&mut adc);
