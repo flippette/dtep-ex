@@ -11,3 +11,12 @@ ufmt = "0.2"
 [dependencies.arduino-hal]
 git = "https://github.com/Rahix/avr-hal.git"
 features = ["arduino-uno", "critical-section-impl"]
+
+[[bin]]
+name = "adxl335"
+
+[[bin]]
+name = "blinky"
+
+[[bin]]
+name = "hcsr04"

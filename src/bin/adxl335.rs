@@ -1,8 +1,11 @@
+#![no_std]
+#![no_main]
+
 use core::ops::RangeInclusive;
 
 use arduino_hal::{
-    adc::AdcSettings, hal::usart::BaudrateArduinoExt, pins, Adc, Peripherals,
-    Usart,
+    adc::AdcSettings, entry, hal::usart::BaudrateArduinoExt, pins, prelude::*,
+    Adc, Peripherals, Usart,
 };
 use panic_halt as _;
 use ufmt::{uwrite, uwriteln};
@@ -15,7 +18,9 @@ const X_UPRIGHT_RANGE: RangeInclusive<u16> = 335..=345;
 const Y_UPRIGHT_RANGE: RangeInclusive<u16> = 265..=275;
 const Z_UPRIGHT_RANGE: RangeInclusive<u16> = 345..=355;
 
-pub fn run(peri: Peripherals) -> ! {
+#[entry]
+fn main() -> ! {
+    let peri = Peripherals::take().unwrap();
     let pins = pins!(peri);
 
     let tx_pin = pins.d1.into_output();
@@ -33,9 +38,9 @@ pub fn run(peri: Peripherals) -> ! {
         let y = y_pin.analog_read(&mut adc);
         let z = z_pin.analog_read(&mut adc);
 
-        let _ = uwrite!(usart, "{} {} {}", x, y, z);
+        uwrite!(usart, "{} {} {}", x, y, z).unwrap_infallible();
 
-        let _ = uwriteln!(
+        uwriteln!(
             usart,
             "{}",
             if X_FLAT_RANGE.contains(&x)
@@ -51,6 +56,7 @@ pub fn run(peri: Peripherals) -> ! {
             } else {
                 ""
             }
-        );
+        )
+        .unwrap_infallible();
     }
 }
