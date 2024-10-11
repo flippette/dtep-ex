@@ -1,5 +1,9 @@
 default_job = "clippy"
 
+[jobs.build]
+command = ["cargo", "build", "--color", "always", "--release"]
+need_stdout = false
+
 [jobs.clippy]
 command = ["cargo", "clippy", "--color", "always", "--release"]
 need_stdout = false
