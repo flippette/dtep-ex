@@ -1,6 +1,6 @@
 [unstable]
 build-std = ["core"]
-build-std-features = ["optimize_for_size"]
+build-std-features = ["optimize_for_size", "panic_immediate_abort"]
 
 [build]
 target = "avr-unknown-gnu-atmega328"
