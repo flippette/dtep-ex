@@ -11,6 +11,9 @@ runner = "ravedude -c -b 115200 uno"
 [env]
 AVR_CPU_FREQUENCY_HZ = "16_000_000"
 
+[profile.dev]
+opt-level = "z"
+
 [profile.release]
 opt-level = "z"
 codegen-units = 1
