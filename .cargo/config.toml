@@ -3,11 +3,10 @@ build-std = ["core"]
 build-std-features = ["optimize_for_size", "panic_immediate_abort"]
 
 [build]
-target = "avr-unknown-gnu-atmega328"
+target = "avr-atmega328p.json"
 
-[target.avr-unknown-gnu-atmega328]
+[target.avr-atmega328p]
 runner = "ravedude -c -b 115200 uno"
-rustflags = ["-Ctarget-cpu=atmega328p"]
 
 [env]
 AVR_CPU_FREQUENCY_HZ = "16_000_000"
